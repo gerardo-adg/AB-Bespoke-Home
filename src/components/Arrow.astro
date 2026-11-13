@@ -1,0 +1,5 @@
+---
+const {direction='up-right'}=Astro.props;
+const path=direction==='down'?'M12 4v16M5 13l7 7 7-7':direction==='back'?'M20 12H4m7-7-7 7 7 7':'M5 19 19 5M5 5h14v14';
+---
+<svg class="studio-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><path d={path}/></svg>

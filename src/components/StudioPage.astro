@@ -1,0 +1,38 @@
+---
+import source from '../data/original.json';
+import Arrow from './Arrow.astro';
+const {route}=Astro.props;
+const page=(source as any)[route];
+const isService=route.startsWith('/services/');
+const projects=source['/projects'].projects;
+const heading=(html:string)=>html.match(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/s)?.[1].replace(/<[^>]+>/g,'')||'';
+const withoutHeading=(html:string)=>html.replace(/<h[1-6][^>]*>.*?<\/h[1-6]>/s,'');
+const split=(html:string)=>html.split(/(?=<h2[ >])/).filter(h=>h.replace(/<[^>]+>/g,'').trim());
+const guide=route==='/plan-whole-home-remodel'?split(page.blocks[1]):[];
+const photos=isService?(route.includes('bathrooms')?source['/projects/campus-commons-bathroom-remodels-in-10-days'].images:route.includes('remodels')?source['/projects/surita-mariemont-full-home-remodel'].images:page.images):[];
+const photo=(i:number)=>photos[i]?.url||['/images/6.jpg','/images/2.jpg','/images/5.jpg','/images/1.jpg'][i%4];
+const details=isService?split(page.blocks[22]):[];
+const serviceLinks=['/services/remodels','/services/kitchen','/services/additions','/services/new-construction'];
+---
+<div class="studio">
+{isService ? <>
+<section class="service-cover studio-wrap">
+ <div class="cover-title"><p class="studio-label">AB BESPOKE HOME · SACRAMENTO</p><h1>{page.texts[0]}</h1><div class="cover-actions"><a class="studio-button" href="/contact">Get A Free Design Consult <Arrow/></a><a class="studio-link" href="/projects">View Our Work <Arrow/></a></div></div>
+ <div class="cover-photo"><img src={photo(0)} alt="AB Bespoke Home project" fetchpriority="high"/><span class="photo-note">{page.texts[1]}</span></div>
+ <div class="cover-promise"><span class="studio-label">AB BESPOKE HOME</span><p>{page.texts[12]}</p><a href="#expect" aria-label="Explore what to expect"><Arrow direction="down"/></a></div>
+</section>
+<nav class="studio-anchorbar studio-wrap" aria-label="On this page"><a href="#expect">What to Expect</a><a href="#approach">Our Approach</a><a href="#planning">Get Started</a></nav>
+<section class="studio-wrap expectations" id="expect"><div class="section-intro"><span class="studio-label">01 / THE EXPERIENCE</span><h2>{page.texts[2]}</h2><p>{page.texts[3]}</p></div><div class="expectations-list">{[4,6,8,10].map((i,n)=><article class="reveal"><span class="studio-index">0{n+1}</span><div><h3>{page.texts[i+1]}</h3><p>{page.texts[i]}</p></div></article>)}</div></section>
+<section class="approach-section" id="approach"><div class="studio-wrap approach-layout"><div class="approach-image"><img src={photo(1)} alt="AB Bespoke Home interior detail" loading="lazy"/><p class="studio-label">DESIGN / BUILD</p></div><div class="approach-content" data-tabset><p class="studio-label">02 / OUR APPROACH</p><div class="approach-tabs" data-tablist aria-label="Explore our approach">{[13,15,17,19].map((i,n)=><button type="button" data-tab={n} id={`approach-tab-${n}`} aria-controls={`approach-panel-${n}`}><span>0{n+1}</span>{page.texts[i]}</button>)}</div>{[13,15,17,19].map((i,n)=><article class="approach-panel" data-panel={n} id={`approach-panel-${n}`} aria-labelledby={`approach-tab-${n}`}><h2>{page.texts[i]}</h2><p>{page.texts[i+1]}</p><a class="studio-link" href="/our-process">Our Process <Arrow/></a></article>)}</div></div></section>
+<section class="studio-wrap planning-guide" id="planning"><div class="section-intro"><span class="studio-label">03 / YOUR PROJECT</span><h2>{page.texts[21]}</h2><a class="studio-button" href="/contact">Start Building <Arrow/></a></div><div class="planning-sections">{details.map((html:string,i:number)=><details class="reading-section" open={i===0}><summary><h3>{heading(html)}</h3><span aria-hidden="true">+</span></summary><div class="prose" set:html={withoutHeading(html)}/></details>)}</div></section>
+<div class="studio-wrap related-studio"><h2>{page.texts[23]}</h2><a class="studio-link" href="/our-services">All Services <Arrow/></a><a class="studio-link" href="/our-process">Our Process <Arrow/></a></div>
+</> : route==='/projects' ? <>
+<section class="portfolio-title studio-wrap"><div><p class="studio-label">AB BESPOKE HOME / SELECTED WORK</p><h1>Featured<br/>Projects</h1></div><div class="portfolio-tools" data-project-filters aria-label="Filter projects"><button type="button" data-filter="all" aria-pressed="true">All Projects</button><button type="button" data-filter="home" aria-pressed="false">Whole Home</button><button type="button" data-filter="bathroom" aria-pressed="false">Bathrooms</button></div></section>
+<section class="studio-wrap portfolio-studio" aria-label="Selected projects">{projects.map((p,i)=><a class={`portfolio-entry entry-${i}`} href={p.href} data-project-kind={p.href.includes('bathroom')?'bathroom':'home'}><div class="portfolio-photo"><img src={(source as any)[p.href].images[0]?.url||'/images/2.jpg'} alt={`${p.name} by AB Bespoke Home`} loading={i<2?'eager':'lazy'}/><span class="entry-arrow"><Arrow/></span></div><div class="portfolio-caption"><span class="studio-index">0{i+1}</span><h2>{p.name}</h2><span class="entry-action">View Project</span></div></a>)}</section>
+</> : route==='/our-services' ? <>
+<section class="directory-cover studio-wrap"><div><p class="studio-label">AB BESPOKE HOME / DESIGN & BUILD</p><h1>{heading(page.blocks[0])}</h1><div class="prose" set:html={withoutHeading(page.blocks[0])}/></div><div class="directory-mosaic"><img src="/images/6.jpg" alt="Custom kitchen by AB Bespoke Home" fetchpriority="high"/><img src="/images/5.jpg" alt="Custom bathroom by AB Bespoke Home" loading="lazy"/></div></section>
+<section class="studio-wrap service-directory">{page.blocks.slice(1,5).map((html:string,i:number)=><article><span class="studio-index">0{i+1}</span><h2><a href={serviceLinks[i]}>{heading(html)} <Arrow/></a></h2><div class="prose" set:html={withoutHeading(html)}/></article>)}</section><div class="studio-wrap directory-close prose" set:html={page.blocks[5]}/>
+</> : <>
+<section class="guide-cover studio-wrap"><p class="studio-label">AB BESPOKE HOME / PLANNING GUIDE</p><h1>{heading(page.blocks[0])}</h1><img src="/images/2.jpg" alt="AB Bespoke Home remodel" fetchpriority="high"/></section><section class="studio-wrap guide-layout"><aside><p class="studio-label">IN THIS GUIDE</p><nav aria-label="Guide sections">{guide.map((html:string,i:number)=><a href={`#guide-${i}`}><span>0{i+1}</span>{heading(html)}</a>)}</nav></aside><div>{guide.map((html:string,i:number)=><article class="guide-chapter prose" id={`guide-${i}`}><span class="studio-index">0{i+1}</span><div set:html={html}/></article>)}</div></section>
+</>}
+</div>

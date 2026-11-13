@@ -93,3 +93,31 @@ if ('IntersectionObserver' in window) {
  }, {rootMargin:'-15% 0px -50% 0px',threshold:0});
  document.querySelectorAll('.timeline-step').forEach(step=>stepsObserver.observe(step));
 }
+
+// Tabs enhance the approach section; all explanations remain visible without JS.
+document.querySelectorAll<HTMLElement>('[data-tabset]').forEach(group=>{
+ const tabs=Array.from(group.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+ const panels=Array.from(group.querySelectorAll<HTMLElement>('[data-panel]'));
+ const select=(index:number,focus=false)=>{
+  tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;});
+  panels.forEach((panel,i)=>panel.hidden=i!==index);
+  if(focus)tabs[index]?.focus();
+ };
+ group.dataset.enhanced='';group.querySelector('[data-tablist]')?.setAttribute('role','tablist');
+ tabs.forEach((tab,index)=>{tab.setAttribute('role','tab');tab.addEventListener('click',()=>select(index));tab.addEventListener('keydown',event=>{
+  let next=index;
+  if(event.key==='ArrowRight')next=(index+1)%tabs.length;
+  else if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;
+  else if(event.key==='Home')next=0;
+  else if(event.key==='End')next=tabs.length-1;
+  else return;
+  event.preventDefault();select(next,true);
+ });});
+ panels.forEach(panel=>{panel.setAttribute('role','tabpanel');panel.tabIndex=0;});select(0);
+});
+document.querySelectorAll<HTMLButtonElement>('[data-project-filters] button').forEach(button=>button.addEventListener('click',()=>{
+ const filter=button.dataset.filter;
+ document.querySelector<HTMLElement>('.portfolio-studio')?.setAttribute('data-active-filter',filter||'all');
+ document.querySelectorAll('[data-project-filters] button').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));
+ document.querySelectorAll<HTMLElement>('[data-project-kind]').forEach(project=>project.hidden=filter!=='all'&&project.dataset.projectKind!==filter);
+}));
