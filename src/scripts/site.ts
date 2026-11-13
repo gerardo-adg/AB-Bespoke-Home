@@ -59,3 +59,12 @@ if (inquiry && !location.hostname.endsWith('.netlify.app') && location.hostname 
   const status=document.querySelector('#form-status');if(status)status.textContent='Your email app will open with your project details. Send the email to complete your inquiry.';
  });
 }
+// Highlight the current process step without hiding any of its explanation.
+if ('IntersectionObserver' in window) {
+ const stepsObserver = new IntersectionObserver(entries => {
+   entries.forEach(entry => {
+     if(entry.isIntersecting){document.querySelectorAll('.timeline-step[data-current]').forEach(step=>step.removeAttribute('data-current'));entry.target.setAttribute('data-current','');}
+   });
+ }, {rootMargin:'-15% 0px -50% 0px',threshold:0});
+ document.querySelectorAll('.timeline-step').forEach(step=>stepsObserver.observe(step));
+}
