@@ -88,9 +88,9 @@
 }
 @media(prefers-reduced-motion:reduce){.detail-toggle{transition:none}}
 
-/* Selected mobile hero: option A, with the headline at 29% of the screen. */
+/* Selected mobile hero: option A, with a glimpse of the next section. */
 @media(max-width:800px){
- body:not(.inner-page) .hero-left:not(.position-study){height:100svh;min-height:620px;max-height:none;display:block;padding:0}
+ body:not(.inner-page) .hero-left:not(.position-study){height:86svh;min-height:min(560px,86svh);max-height:none;display:block;padding:0}
  body:not(.inner-page) .hero-left:not(.position-study) .hero-content{position:absolute;left:20px;right:20px;top:29svh;bottom:auto;width:auto;text-align:center}
  body:not(.inner-page) .hero-left:not(.position-study) .hero-bottom{margin-top:24px}
  body:not(.inner-page) .hero-left:not(.position-study) .hero-actions{justify-content:center;align-items:center;gap:14px 24px;margin-top:25px}
@@ -103,3 +103,5 @@
  body:not(.inner-page) .hero-left:not(.position-study) .hero-actions>.button{justify-content:center;min-width:164px;gap:0;text-align:center}
  body:not(.inner-page) .hero-left:not(.position-study) .hero-actions>.button>span{display:none}
 }
+
+@media(max-width:800px){body:not(.inner-page) #intro{padding-top:40px}}
