@@ -1,0 +1,17 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Arrow from '../components/Arrow.astro';
+import source from '../data/original.json';
+---
+<SiteLayout title="AB Bespoke Home — Mobile Hero Study" home>
+<section class="hero hero-left position-study"><img class="hero-image" src="/images/4.jpg" alt="AB Bespoke kitchen with blue cabinetry and brass fixtures" fetchpriority="high"/><div class="hero-shade"></div><div class="hero-content"><h1>Your Home,<br/>Built to Suit</h1><div class="hero-bottom"><p>{source['/'].texts[1]}</p><div class="hero-actions"><a class="button light" href="/contact">Start Building <Arrow/></a><a class="hero-secondary" href="/projects">View Our Work <Arrow/></a></div></div></div><a class="scroll" href="/"><span>AB BESPOKE HOME</span><Arrow direction="down"/></a></section>
+</SiteLayout>
+<script>
+const placement=new URL(location.href).searchParams.get('position');
+if(['balanced','upper','high'].includes(placement||''))document.body.dataset.headlinePosition=placement!;
+</script>
+<style>
+.position-study.hero{height:100svh;min-height:620px;max-height:none;display:block;padding:0}.position-study.hero .hero-content{position:absolute;left:20px;right:20px;top:29svh;bottom:auto;text-align:center;width:auto}.position-study h1{font-size:clamp(44px,11.5vw,72px);letter-spacing:-2.4px;line-height:1.08;margin-inline:auto;text-wrap:balance}.position-study .hero-bottom{margin-top:24px}.position-study .hero-bottom p{max-width:340px;margin-inline:auto;font-size:16px;line-height:1.55;text-wrap:balance}.position-study .hero-actions{justify-content:center;align-items:center;gap:14px 24px;margin-top:25px}.position-study .hero-actions .button{padding:15px 20px;min-height:52px;font-size:13px;gap:28px;margin:0}.position-study .hero-secondary{min-height:48px;display:inline-flex;align-items:center;gap:18px;font-size:13px;padding:10px 0}.position-study .hero-shade{background:linear-gradient(180deg,#13201980,#1320195c 60%,#13201945)}.position-study .hero-image{object-position:58% 50%}.position-study .scroll{bottom:24px;left:20px;right:20px}.position-study .scroll>span:first-child{font-size:9px}.position-study :global(.studio-icon){width:17px;height:17px;flex-shrink:0}.position-study .scroll :global(.studio-icon){width:20px;height:20px}:global(body[data-headline-position=upper]) .position-study .hero-content{top:23svh}:global(body[data-headline-position=high]) .position-study .hero-content{top:max(115px,18svh)}:global(footer){display:none!important}
+@media(max-width:360px){.position-study .hero-actions{flex-direction:column;gap:10px}.position-study h1{font-size:43px}.position-study .hero-bottom{margin-top:20px}.position-study .hero-actions{margin-top:20px}}
+@media(max-height:650px){.position-study.hero{min-height:620px}.position-study.hero .hero-content{top:150px}:global(body[data-headline-position=upper]) .position-study .hero-content{top:125px}:global(body[data-headline-position=high]) .position-study .hero-content{top:110px}}
+</style>
