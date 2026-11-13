@@ -1,6 +1,7 @@
 ---
 import source from '../data/original.json';
 import Arrow from './Arrow.astro';
+import BrandSeal from './BrandSeal.astro';
 const {route}=Astro.props;
 const page=(source as any)[route];
 const project=source['/projects'].projects.find(p=>p.href===route);
@@ -22,7 +23,7 @@ const related=source['/projects'].projects.filter(p=>p.href!==route).slice(0,2);
 <section class="studio-wrap case-related"><p class="studio-label">CONTINUE EXPLORING</p><div>{related.map(p=><a href={p.href}><img src={(source as any)[p.href].images[0].url} alt={`${p.name} project`} loading="lazy"/><h2>{p.name} <Arrow/></h2></a>)}</div></section>
 </> : route==='/meet-the-team' ? <>
 <section class="profile-cover studio-wrap"><div class="profile-heading"><p class="studio-label">AB BESPOKE HOME / THE PEOPLE</p><h1>{page.texts[0]}</h1></div><figure class="profile-photo"><img src="/images/team0.jpg" alt="Aaron and Allison Byrne" fetchpriority="high"/><figcaption>AB BESPOKE HOME · SACRAMENTO, CA</figcaption></figure><div class="profile-intro prose" set:html={page.blocks[1]}/></section>
-<section class="owner-profile"><div class="studio-wrap"><div class="owner-heading" set:html={page.blocks[2]}/><div class="owner-composition"><figure><img src="/images/team1.jpg" alt="Aaron Byrne, owner of AB Bespoke Home" loading="lazy"/><figcaption>AARON BYRNE / OWNER</figcaption></figure><div class="owner-biography">{page.blocks.slice(3,6).map((html:string,i:number)=><article><span class="studio-index">0{i+1}</span><div class="prose" set:html={html}/></article>)}</div></div></div></section><div class="studio-wrap profile-close prose" set:html={page.blocks[6]}/>
+<section id="owner" class="owner-profile layered-owner"><BrandSeal/><div class="studio-wrap"><div class="owner-heading" set:html={page.blocks[2]}/><div class="owner-composition"><figure class="owner-photo-pair"><img class="owner-main-photo reveal" src="/images/team1.jpg" alt="Aaron Byrne, owner of AB Bespoke Home" loading="lazy"/><img class="owner-work-inset reveal" data-reveal-delay="120" src="/images/6.jpg" alt="Kitchen remodel by AB Bespoke Home" loading="lazy"/><figcaption>AARON BYRNE / OWNER</figcaption></figure><div class="owner-biography">{page.blocks.slice(3,6).map((html:string,i:number)=><article><span class="studio-index">0{i+1}</span><div class="prose" set:html={html}/></article>)}</div></div></div></section><div class="studio-wrap profile-close prose" set:html={page.blocks[6]}/>
 </> : route==='/our-process' ? <>
 <section class="process-studio"><div class="studio-wrap process-stage"><div><p class="studio-label">AB BESPOKE HOME / HOW WE WORK</p><h1>{page.texts[0]}</h1></div><img src="/images/6.jpg" alt="AB Bespoke Home kitchen project" fetchpriority="high"/><nav class="process-map" aria-label="Process steps">{processSteps.map((html:string,i:number)=><a href={`#process-${i+1}`}><span>0{i+1}</span>{heading(html)}<Arrow direction="down"/></a>)}</nav></div></section>
 <section class="studio-wrap process-path">{processSteps.map((html:string,i:number)=><article id={`process-${i+1}`} class="process-station timeline-step"><div class="station-marker"><span>0{i+1}</span><div aria-hidden="true"></div></div><div class="prose" set:html={html}/></article>)}</section><div class="studio-wrap process-reading prose" set:html={page.blocks[2]}/>

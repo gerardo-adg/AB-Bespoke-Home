@@ -29,10 +29,13 @@ const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 const activeMotion = new Set<Animation>();
 const reveal = (element: Element, delay = 0) => {
   if (motionPreference.matches) return;
-  const animation = element.animate([
+  const frames = element.classList.contains('section-rule') ? [
+    {opacity:0,transform:'scaleX(0)'},{opacity:1,transform:'scaleX(1)'}
+  ] : [
     { opacity: 0, transform: 'translateY(14px)' },
     { opacity: 1, transform: 'translateY(0)' }
-  ], { duration: 780, delay, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+  ];
+  const animation = element.animate(frames, { duration: 780, delay, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
   activeMotion.add(animation);
   animation.finished.then(() => activeMotion.delete(animation)).catch(() => activeMotion.delete(animation));
 };
@@ -42,7 +45,7 @@ if (!motionPreference.matches && 'IntersectionObserver' in window) {
   revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      reveal(entry.target);
+      reveal(entry.target,Math.min(200,Number((entry.target as HTMLElement).dataset.revealDelay)||0));
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.08 });
