@@ -1,4 +1,29 @@
-const menu=document.querySelector('.menu');const nav=document.querySelector('nav');menu?.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));nav?.classList.toggle('open',open)});nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu?.setAttribute('aria-expanded','false');nav.classList.remove('open')}));const dialog=document.querySelector('dialog')!;document.querySelectorAll<HTMLButtonElement>('[data-image]').forEach(b=>b.addEventListener('click',()=>{const img=dialog.querySelector('img')!;img.src=b.dataset.image!;img.alt=b.dataset.title!;dialog.querySelector('p')!.textContent=b.dataset.title!;dialog.showModal()}));dialog.querySelector('button')?.addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
+const menu=document.querySelector<HTMLButtonElement>('.menu');
+const nav=document.querySelector<HTMLElement>('#navigation');
+const mobileViewport=window.matchMedia('(max-width:800px)');
+const setMenu=(open:boolean,restoreFocus=false)=>{
+ menu?.setAttribute('aria-expanded',String(open));
+ menu?.setAttribute('aria-label',open?'Close navigation':'Open navigation');
+ if(menu)menu.innerHTML=open?'Close <span>−</span>':'Menu <span>＋</span>';
+ nav?.classList.toggle('open',open);
+ document.body.classList.toggle('menu-open',open);
+ document.querySelectorAll<HTMLElement>('main,footer').forEach(el=>el.inert=open);
+ if(!open){nav?.querySelectorAll('details').forEach(d=>d.open=false);if(restoreFocus)menu?.focus();}
+};
+menu?.addEventListener('click',()=>setMenu(menu.getAttribute('aria-expanded')!=='true'));
+nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+mobileViewport.addEventListener('change',()=>setMenu(false));
+document.addEventListener('keydown',event=>{
+ if(!document.body.classList.contains('menu-open'))return;
+ if(event.key==='Escape'){setMenu(false,true);return;}
+ if(event.key==='Tab'){
+  const controls=Array.from(document.querySelectorAll<HTMLElement>('header a,header button,header summary')).filter(el=>el.getClientRects().length>0);
+  const first=controls[0],last=controls[controls.length-1];
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}
+  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}
+ }
+});
+const dialog=document.querySelector('dialog')!;document.querySelectorAll<HTMLButtonElement>('[data-image]').forEach(b=>b.addEventListener('click',()=>{const img=dialog.querySelector('img')!;img.src=b.dataset.image!;img.alt=b.dataset.title!;dialog.querySelector('p')!.textContent=b.dataset.title!;dialog.showModal()}));dialog.querySelector('button')?.addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 // Progressive enhancement: content stays visible if scripting is unavailable.
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 const activeMotion = new Set<Animation>();
@@ -46,7 +71,7 @@ document.querySelectorAll('nav details').forEach(detail => {
     if ((detail as HTMLDetailsElement).open) document.querySelectorAll('nav details').forEach(other => { if(other !== detail) (other as HTMLDetailsElement).open = false; });
   });
 });
-document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('nav details').forEach(d=>(d as HTMLDetailsElement).open=false);nav?.classList.remove('open');menu?.setAttribute('aria-expanded','false');}});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('nav details').forEach(d=>(d as HTMLDetailsElement).open=false);setMenu(false);}});
 document.addEventListener('click',event=>{if(event.target instanceof Node && !nav?.contains(event.target)) document.querySelectorAll('nav details').forEach(d=>(d as HTMLDetailsElement).open=false);});
 const inquiry=document.querySelector<HTMLFormElement>('#inquiry');
 if (inquiry && !location.hostname.endsWith('.netlify.app') && location.hostname !== 'www.ab-bespoke.com' && location.hostname !== 'ab-bespoke.com') {
