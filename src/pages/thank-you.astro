@@ -1,0 +1,5 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import source from '../data/original.json';
+---
+<SiteLayout title="Thank you | AB Bespoke Home"><section class="wrap page-title"><div class="prose" set:html={source['/contact'].form.success}/><a class="text-link" href="/">Home <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 19 19 5M5 5h14v14"/></svg></a></section></SiteLayout>
